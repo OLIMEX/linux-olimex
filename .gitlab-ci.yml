@@ -1,0 +1,118 @@
+default:
+  image: debian:buster
+
+stages:
+  - prepare
+  - build
+  - headers
+  - deploy
+
+.common_packages: &common_packages
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends build-essential bc kmod flex bison cpio libncurses5-dev fakeroot libelf-dev libssl-dev
+    - apt-get install -y --no-install-recommends rsync $PACKAGES
+
+.build: &build
+  tags:
+    - build
+  artifacts:
+    paths:
+      - result/*
+    reports:
+      dotenv: build.env
+  <<: *common_packages
+  script:
+    - echo "Starting $EXTRA_VER build..."
+    - echo "EXTRA_VER=$EXTRA_VER" >> build.env
+    - make distclean
+    - make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE olinuxino_defconfig
+    - make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j$(nproc) bindeb-pkg LOCALVERSION=-olimex KDEB_PKGVERSION=$(make kernelversion)-$EXTRA_VER DTC_FLAGS=-@
+    - rm -f ../linux-headers-*-olimex*.deb
+    - mkdir -p result/ && mv ../linux*.deb result/
+    - cp Module.symvers result/Module.symvers.$ARCH
+  cache: {}
+
+.build_headers: &build_headers
+  tags:
+    - build
+  artifacts:
+    paths:
+      - result/*
+  <<: *common_packages
+  script:
+    - make M=scripts clean
+    - make olinuxino_defconfig
+    - cp result/Module.symvers.$ARCH Module.symvers
+    - make bindeb-headers-pkg LOCALVERSION=-olimex KDEB_PKGVERSION=$(make kernelversion)-$EXTRA_VER DTC_FLAGS=-@
+    - mkdir -p result/ && mv ../linux*.deb result/
+  cache: {}
+
+prepare:
+  stage: prepare
+  script:
+    - echo "EXTRA_VER=$(date +%Y%m%d-%H%M%S)" >> build.env
+  tags:
+    - build
+  artifacts:
+    reports:
+      dotenv: build.env
+  cache: {}
+
+build:arm:
+  stage: build
+  variables:
+    PACKAGES: "gcc-arm-linux-gnueabihf"
+    CROSS_COMPILE: "arm-linux-gnueabihf-"
+    ARCH: "arm"
+  <<: *build
+
+build:arm64:
+  stage: build
+  variables:
+    PACKAGES: "gcc-aarch64-linux-gnu"
+    CROSS_COMPILE: "aarch64-linux-gnu-"
+    ARCH: "arm64"
+  <<: *build
+
+headers:arm32v7:
+  image: arm32v7/debian:buster
+  stage: headers
+  variables:
+    ARCH: "arm"
+  needs:
+    - "build:arm"
+  <<: *build_headers
+
+headers:arm64v8:
+  image: arm64v8/debian:buster
+  stage: headers
+  variables:
+    ARCH: "arm64"
+  needs:
+    - "build:arm64"
+  <<: *build_headers
+
+deploy-staging:
+  stage: deploy
+  script:
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb buster result/linux*.deb
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb bionic result/linux*.deb
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb focal result/linux*.deb
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb sid result/linux*.deb
+  cache: {}
+  tags:
+    - deploy
+
+deploy-release:
+  stage: deploy
+  script:
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb buster result/linux*.deb
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb bionic result/linux*.deb
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb focal result/linux*.deb
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb sid result/linux*.deb
+  tags:
+    - deploy
+  cache: {}
+  only:
+    - /^release-.*$/
