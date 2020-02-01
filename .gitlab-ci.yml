@@ -1,0 +1,50 @@
+default:
+  image: buster-amd64-runner:latest
+
+stages:
+  - build
+  - deploy
+
+.common_packages: &common_packages
+  - apt-get update
+  - apt-get install -y --no-install-recommends build-essential linux-source bc kmod flex bison cpio libncurses5-dev fakeroot rsync libelf-dev:native libssl-dev:native
+  - apt-get install -y --no-install-recommends gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf
+
+build-deb:
+  stage: build
+  artifacts:
+    paths:
+      - result/*
+  before_script:
+    - *common_packages
+  script:
+    - export EXTRA_VER="$(date +%Y%m%d-%H%M%S)"
+    - ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- ./build-package.sh
+    - ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- ./build-package.sh
+    - mkdir -p result/ && mv ../linux*.deb result/
+  tags:
+    - build
+  variables:
+    DEFCONFIG: "olinuxino_defconfig"
+
+deploy-staging:
+  stage: deploy
+  script:
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb buster result/linux*.deb
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb bionic result/linux*.deb
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb focal result/linux*.deb
+    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb sid result/linux*.deb
+  tags:
+    - deploy
+
+deploy-release:
+  stage: deploy
+  script:
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb buster result/linux*.deb
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb bionic result/linux*.deb
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb focal result/linux*.deb
+    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb sid result/linux*.deb
+  tags:
+    - deploy
+  only:
+    - /^release-.*$/
