@@ -929,6 +929,16 @@ config LEDS_ACER_A500
 	  This option enables support for the Power Button LED of
 	  Acer Iconia Tab A500.
 
+config LEDS_AXP20X
+	tristate "LED support for X-Powers PMICs"
+	depends on MFD_AXP20X
+	help
+	  This option enables support for CHGLED found on most of X-Powers
+	  PMICs.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called leds-axp20x.
+
 comment "LED Triggers"
 source "drivers/leds/trigger/Kconfig"
 
