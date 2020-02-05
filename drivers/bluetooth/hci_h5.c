@@ -910,7 +910,10 @@ static int h5_btrtl_setup(struct h5 *h5)
 	err = btrtl_download_firmware(h5->hu->hdev, btrtl_dev);
 	/* Give the device some time before the hci-core sends it a reset */
 	usleep_range(10000, 20000);
+	if (err)
+		goto out_free;
 
+	btrtl_apply_quirks(h5->hu->hdev, btrtl_dev);
 out_free:
 	btrtl_free(btrtl_dev);
 
