@@ -1405,7 +1405,9 @@ static int sunxi_mmc_probe(struct platform_device *pdev)
 	 */
 	if ((host->cfg->clk_delays || host->use_new_timings) &&
 	    !of_device_is_compatible(pdev->dev.of_node,
-				     "allwinner,sun50i-h5-emmc"))
+				     "allwinner,sun50i-h5-emmc") &&
+	    !of_machine_is_compatible("allwinner,sun7i-a20") &&
+	    !of_machine_is_compatible("olimex,a64-olinuxino-2ge8g"))
 		mmc->caps      |= MMC_CAP_1_8V_DDR | MMC_CAP_3_3V_DDR;
 
 	ret = mmc_of_parse(mmc);
