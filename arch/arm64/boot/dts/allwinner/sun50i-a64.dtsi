@@ -787,6 +787,11 @@
 				function = "uart3";
 			};
 
+			uart3_ph_pins: uart3-ph-pins {
+				pins = "PH4", "PH5";
+				function = "uart3";
+			};
+
 			uart4_pins: uart4-pins {
 				pins = "PD2", "PD3";
 				function = "uart4";
@@ -847,6 +852,20 @@
 			resets = <&ccu RST_BUS_I2S1>;
 			dma-names = "rx", "tx";
 			dmas = <&dma 4>, <&dma 4>;
+			status = "disabled";
+		};
+
+		i2s2: i2s@1c22800 {
+			#sound-dai-cells = <0>;
+			compatible = "allwinner,sun50i-a64-i2s",
+				     "allwinner,sun8i-h3-i2s";
+			reg = <0x01c22800 0x400>;
+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
+			clock-names = "apb", "mod";
+			dmas = <&dma 27>;
+			resets = <&ccu RST_BUS_I2S2>;
+			dma-names = "tx";
 			status = "disabled";
 		};
 
@@ -1147,6 +1166,7 @@
 		};
 
 		hdmi: hdmi@1ee0000 {
+			#sound-dai-cells = <0>;
 			compatible = "allwinner,sun50i-a64-dw-hdmi",
 				     "allwinner,sun8i-a83t-dw-hdmi";
 			reg = <0x01ee0000 0x10000>;
