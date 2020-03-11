@@ -94,6 +94,9 @@ else
 	packageversion=$version-$revision
 fi
 sourcename=$KDEB_SOURCENAME
+linux_meta_name=linux$LOCALVERSION
+linux_image_meta_name=linux-image$LOCALVERSION
+linux_headers_meta_name=linux-headers$LOCALVERSION
 
 if [ "$ARCH" = "um" ] ; then
 	packagename=user-mode-linux
@@ -192,6 +195,27 @@ Description: Linux support headers for userspace development
  This package provides userspaces headers from the Linux kernel.  These headers
  are used by the installed headers for GNU glibc and other system libraries.
 Multi-Arch: same
+
+Package: $linux_image_meta_name
+Architecture: $debarch
+Depends: $packagename-$version
+Description: Olimex Linux kernel image
+ This package will always depend on the latest olimex kernel image
+ available.
+
+Package: $linux_headers_meta_name
+Architecture: $debarch
+Depends: $kernel_headers_packagename
+Description: Olimex Linux kernel headers
+ This package will always depend on the latest olimex kernel headers
+ available.
+
+Package: $linux_meta_name
+Architecture: $debarch
+Depends: $linux_image_meta_name, $linux_headers_meta_name
+Description: Complete Olimex Linux kernel and headers
+ This package will always depend on the latest olimex kernel image and headers
+ available.
 EOF
 
 if is_enabled CONFIG_MODULES; then
