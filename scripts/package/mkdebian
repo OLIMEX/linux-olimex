@@ -98,6 +98,7 @@ packagename=linux-image-$version
 kernel_headers_packagename=linux-headers-$version
 dbg_packagename=$packagename-dbg
 debarch=
+linux_meta_name=linux$LOCALVERSION
 linux_image_meta_name=linux-image$LOCALVERSION
 linux_headers_meta_name=linux-headers$LOCALVERSION
 set_debarch
@@ -213,6 +214,13 @@ Architecture: $debarch
 Depends: $kernel_headers_packagename
 Description: Olimex Linux kernel headers
  This package will always depend on the latest olimex kernel headers
+ available.
+
+Package: $linux_meta_name
+Architecture: $debarch
+Depends: $linux_image_meta_name, $linux_headers_meta_name
+Description: Complete Olimex Linux kernel and headers
+ This package will always depend on the latest olimex kernel image and headers
  available.
 EOF
 

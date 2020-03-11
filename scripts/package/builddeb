@@ -105,6 +105,7 @@ dbg_dir=debian/linux-image-dbg
 meta_dir="$objtree/debian/metatmp"
 packagename=linux-image-$version
 dbg_packagename=$packagename-dbg
+linux_meta_name=linux$LOCALVERSION
 linux_image_meta_name=linux-image$LOCALVERSION
 linux_headers_meta_name=linux-headers$LOCALVERSION
 
@@ -133,6 +134,7 @@ rm -rf "$tmpdir" "$dbg_dir" debian/files "$meta_dir"
 mkdir -m 755 -p "$tmpdir/DEBIAN"
 mkdir -p "$tmpdir/lib" "$tmpdir/boot"
 mkdir -p "$kernel_headers_dir/lib/modules/$version/"
+mkdir -p "$meta_dir/linux"
 mkdir -p "$meta_dir/linux-image"
 mkdir -p "$meta_dir/linux-headers"
 
@@ -213,6 +215,7 @@ if [ "$ARCH" != "um" ]; then
 
 	deploy_libc_headers debian/linux-libc-dev
 	create_package linux-libc-dev debian/linux-libc-dev
+	create_package "$linux_meta_name" "$meta_dir/linux"
 	create_package "$linux_image_meta_name" "$meta_dir/linux-image"
 	create_package "$linux_headers_meta_name" "$meta_dir/linux-headers"
 fi
