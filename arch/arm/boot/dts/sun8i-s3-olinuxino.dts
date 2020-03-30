@@ -1,0 +1,253 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (C) 2020 Dimitar Gamishev <hehopmajieh@debian.bg>
+*/
+
+/dts-v1/;
+#include "sun8i-v3.dtsi"
+
+#include "sunxi-common-regulators.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pwm/pwm.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	model = "Olimex S3-OLinuXino";
+	compatible = "olimex,s3-olinuxino", "sochip,s3",
+                     "allwinner,sun8i-v3";
+
+	aliases {
+		serial0 = &uart1;
+		ethernet0 = &emac;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	reg_vcc3v3: vcc3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+	};
+
+	backlight: backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm 0 50000 PWM_POLARITY_INVERTED>;
+		brightness-levels = <0 10 20 30 40 50 60 70 80 90 100>;
+		default-brightness-level = <8>;
+
+	};
+
+	panel: panel {
+		compatible = "olimex,lcd-olinuxino-7";
+		backlight = <&backlight>;
+		enable-gpios = <&pio 4 18 GPIO_ACTIVE_HIGH>; /* PE18 */
+		pinctrl-names = "default";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port {
+			panel_input: endpoint {
+				remote-endpoint = <&tcon0_out_lcd>;
+			};
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		status_led {
+			label = "mp130:orange:status";
+			gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>;
+		};
+	};
+};
+
+&mmc0 {
+	broken-cd;
+	bus-width = <4>;
+	vmmc-supply = <&reg_vcc3v3>;
+	status = "okay";
+};
+
+&emac {
+	status = "okay";
+};
+
+&mmc1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&mmc1_pins>;
+	vmmc-supply = <&reg_vcc3v3>;
+	bus-width = <4>;
+	non-removable;
+	status = "okay";
+
+	rtl8723bs: sdio_wifi@1 {
+		reg = <1>;
+	};
+};
+
+&uart1 {
+	pinctrl-0 = <&uart1_pg_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&i2c0 {
+	status="okay";
+	axp209: pmic@34 {
+	reg = <0x34>;
+		interrupt-parent = <&nmi_intc>;
+		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
+	};
+};
+
+&usb_otg {
+	dr_mode = "peripheral";
+	status = "okay";
+};
+
+&de {
+	status="okay";
+};
+
+&tcon0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&lcd_rgb666_pins>;
+	status = "okay";
+};
+
+&tcon0_out {
+	tcon0_out_lcd: endpoint@0 {
+		reg = <0>;
+		remote-endpoint = <&panel_input>;
+	};
+};
+
+#include "axp209.dtsi"
+
+&ac_power_supply {
+	status = "okay";
+};
+
+&battery_power_supply {
+	status = "okay";
+};
+
+&reg_dcdc2 {
+	regulator-always-on;
+	regulator-min-microvolt = <1100000>;
+	regulator-max-microvolt = <1100000>;
+	regulator-name = "vcc-emac";
+};
+
+&reg_dcdc3 {
+	regulator-always-on;
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+	regulator-name = "vcc3v3";
+};
+
+&reg_ldo2 {
+	regulator-always-on;
+	regulator-min-microvolt = <3000000>;
+	regulator-max-microvolt = <3000000>;
+	regulator-name = "vcc-pll";
+};
+
+&reg_ldo3 {
+	regulator-always-on;
+	regulator-min-microvolt = <1200000>;
+	regulator-max-microvolt = <1200000>;
+	regulator-name = "dvdd";
+};
+
+&reg_ldo4 {
+	regulator-min-microvolt = <2400000>;
+	regulator-max-microvolt = <2400000>;
+	regulator-name = "avdd-csi";
+};
+
+&pio {
+	vcc-pa-supply = <&reg_vcc3v3>;
+	vcc-pc-supply = <&reg_vcc3v3>;
+	vcc-pe-supply = <&reg_ldo3>;
+	vcc-pf-supply = <&reg_vcc3v3>;
+	vcc-pg-supply = <&reg_ldo4>;
+
+	led_pins_olinuxinolime: led-pins {
+		pins = "PH2";
+		function = "gpio_out";
+		drive-strength = <20>;
+	};
+};
+
+&reg_usb0_vbus {
+	gpio = <&pio 2 10 GPIO_ACTIVE_HIGH>; /* PB10 */
+	status = "okay";
+};
+
+&emac {
+	phy-handle = <&int_mii_phy>;
+	phy-mode = "mii";
+	allwinner,leds-active-low;
+	status = "okay";
+};
+
+&csi1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&csi1_pins>;
+	port {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		/* Parallel bus endpoint */
+		csi_from_ov2640: endpoint {
+			remote-endpoint = <&ov2640_to_csi>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			bus-width = <10>;
+			pclk-sample = <1>;
+		};
+	};
+};
+
+&i2c1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_pins>;
+
+	ov2640: camera@30 {
+		compatible = "ovti,ov2640";
+		reg = <0x30>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&csi1_mclk>;
+		clocks = <&ccu CLK_CSI1_MCLK>;
+		clock-names = "xvclk";
+		assigned-clocks = <&ccu CLK_CSI1_MCLK>;
+		assigned-clock-rates = <24000000>;
+		reset-gpios = <&pio 4 17 GPIO_ACTIVE_LOW>;
+		powerdown-gpios = <&pio 4 15 GPIO_ACTIVE_HIGH>;
+
+		port {
+			ov2640_to_csi: endpoint {
+				remote-endpoint = <&csi_from_ov2640>;
+				bus-width = <10>;
+			};
+		};
+	};
+};
+
+&pwm {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pwm_pin>;
+	status = "okay";
+};
+
+&usbphy {
+	usb0_id_det-gpios = <&pio 6 9 GPIO_ACTIVE_HIGH>;
+	usb0_vbus-supply = <&reg_usb0_vbus>;
+	status = "okay";
+};
