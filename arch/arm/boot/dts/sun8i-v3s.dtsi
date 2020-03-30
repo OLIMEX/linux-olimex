@@ -197,6 +197,13 @@
 			};
 		};
 
+		nmi_intc: interrupt-controller@1c00030 {
+			compatible = "allwinner,sun7i-a20-sc-nmi";
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			reg = <0x01c00030 0x0c>;
+			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+		};
 
 		mmc0: mmc@1c0f000 {
 			compatible = "allwinner,sun7i-a20-mmc";
@@ -347,6 +354,11 @@
 				function = "i2c0";
 			};
 
+			i2c1_pins: i2c1-pins {
+				pins = "PE21", "PE22";
+				function = "i2c1";
+			};
+
 			/omit-if-no-ref/
 			i2c1_pe_pins: i2c1-pe-pins {
 				pins = "PE21", "PE22";
@@ -356,6 +368,11 @@
 			uart0_pb_pins: uart0-pb-pins {
 				pins = "PB8", "PB9";
 				function = "uart0";
+			};
+
+			uart1_pg_pins: uart1-pg-pins {
+				pins = "PG6", "PG7";
+				function = "uart1";
 			};
 
 			uart2_pins: uart2-pins {
@@ -382,6 +399,31 @@
 			spi0_pins: spi0-pins {
 				pins = "PC0", "PC1", "PC2", "PC3";
 				function = "spi0";
+			};
+
+			pwm_pin: pwm-pin {
+				pins = "PB4";
+				function = "pwm0";
+			};
+
+			lcd_rgb666_pins: lcd-rgb666-pins {
+				pins = "PD0", "PD1", "PD2", "PD3", "PD4", "PD5",
+				       "PD6", "PD7", "PD8", "PD9", "PD10", "PD11",
+				       "PD12", "PD13", "PD14", "PD15", "PD16", "PD17",
+				       "PD18", "PD19", "PD20", "PD21";
+				function = "lcd";
+			};
+
+			csi1_pins: csi-pins {
+				pins = "PE0", "PE2", "PE3", "PE6",
+				       "PE7", "PE8", "PE9", "PE10", "PE11",
+				       "PE12","PE13","PE14","PE15";
+				function = "csi";
+			};
+
+			csi1_mclk: csi1-mclk {
+				pins = "PE1";
+				function = "csi";
 			};
 		};
 
@@ -546,5 +588,28 @@
 			#interrupt-cells = <3>;
 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
 		};
+		pwm: pwm@1c21400 {
+			compatible = "allwinner,sun8i-h3-pwm";
+			reg = <0x01c21400 0x8>;
+			clocks = <&osc24M>;
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+
+		/*
+		codec: codec@1c22c00 {
+			#sound-dai-cells = <0>;
+			compatible = "allwinner,sun8i-h3-codec";
+			reg = <0x01c22c00 0x400>;
+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
+			clock-names = "apb", "codec";
+			resets = <&ccu RST_BUS_CODEC>;
+			dmas = <&dma 15>, <&dma 15>;
+			dma-names = "rx", "tx";
+			allwinner,codec-analog-controls = <&codec_analog>;
+			status = "disabled";
+		};
+		*/
 	};
 };
