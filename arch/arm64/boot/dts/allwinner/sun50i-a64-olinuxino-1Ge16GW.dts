@@ -15,8 +15,8 @@
 
 &mmc2 {
 	vqmmc-supply = <&reg_eldo1>;
-	mmc-hs200-1_8v;
-	allwinner,drive-data-phase = <180>;
+/*	mmc-hs200-1_8v;
+	allwinner,drive-data-phase = <180>;*/
 };
 
 &pio {
