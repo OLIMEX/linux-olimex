@@ -183,6 +183,19 @@
 	status = "okay";
 };
 
+#include "axp209.dtsi"
+&reg_ldo3 {
+	regulator-always-on;
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+};
+
+&reg_ldo4 {
+	regulator-always-on;
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+};
+
 &reg_usb0_vbus {
 	status = "okay";
 };
