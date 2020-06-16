@@ -71,6 +71,14 @@ config DRM_LVDS_CODEC
 	  Support for transparent LVDS encoders and decoders that don't
 	  require any configuration.
 
+config DRM_ITE_IT66121
+       tristate "ITE IT66121 HDMI bridge"
+       depends on OF
+       select DRM_KMS_HELPER
+       select REGMAP_I2C
+       help
+         Support for ITE IT66121 HDMI bridge.
+
 config DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW
 	tristate "MegaChips stdp4028-ge-b850v3-fw and stdp2690-ge-b850v3-fw"
 	depends on OF
