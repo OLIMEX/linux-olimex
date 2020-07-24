@@ -50,7 +50,7 @@ static irqreturn_t ar1021_i2c_irq(int irq, void *dev_id)
 	y = ((data[4] & 0x1f) << 7) | (data[3] & 0x7f);
 
 	input_report_abs(input, ABS_X, x);
-	input_report_abs(input, ABS_Y, y);
+	input_report_abs(input, ABS_Y, (4095-y));
 	input_report_key(input, BTN_TOUCH, button);
 	input_sync(input);
 
