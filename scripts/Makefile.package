@@ -82,9 +82,18 @@ bindeb-pkg:
 	$(CONFIG_SHELL) $(srctree)/scripts/package/mkdebian
 	+dpkg-buildpackage -r$(KBUILD_PKG_ROOTCMD) -a$$(cat debian/arch) $(DPKG_FLAGS) -b -nc -uc
 
+PHONY += bindeb-headers-pkg
+bindeb-headers-pkg:
+	$(CONFIG_SHELL) $(srctree)/scripts/package/mkdebian-headers
+	+dpkg-buildpackage -r$(KBUILD_PKG_ROOTCMD) -a$$(cat debian/arch) $(DPKG_FLAGS) -b -nc -uc
+
 PHONY += intdeb-pkg
 intdeb-pkg:
 	+$(CONFIG_SHELL) $(srctree)/scripts/package/builddeb
+
+PHONY += intdeb-headers-pkg
+intdeb-headers-pkg:
+	+$(CONFIG_SHELL) $(srctree)/scripts/package/builddeb-headers
 
 # snap-pkg
 # ---------------------------------------------------------------------------
