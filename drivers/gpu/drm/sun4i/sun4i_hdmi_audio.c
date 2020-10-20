@@ -83,10 +83,12 @@ static int sun4i_hdmi_audio_startup(struct snd_pcm_substream *substream,
 	ret = regmap_read_poll_timeout(hdmi->regmap,
 				       SUN4I_HDMI_AUDIO_CTRL_REG,
 				       reg, !reg, 100, 50000);
+	/* we dont care about reset errors. this fixes a10
 	if (ret < 0) {
 		DRM_ERROR("Failed to reset HDMI Audio\n");
 		return ret;
 	}
+	*/
 
 	regmap_write(hdmi->regmap,
 		     SUN4I_HDMI_AUDIO_CTRL_REG,
