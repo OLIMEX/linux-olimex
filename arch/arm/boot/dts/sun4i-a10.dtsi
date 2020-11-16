@@ -470,6 +470,8 @@
 			clocks = <&ccu CLK_AHB_MMC2>, <&ccu CLK_MMC2>;
 			clock-names = "ahb", "mmc";
 			interrupts = <34>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&mmc2_pins>;
 			status = "disabled";
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -753,6 +755,14 @@
 				pins = "PF0", "PF1", "PF2",
 				       "PF3", "PF4", "PF5";
 				function = "mmc0";
+				drive-strength = <30>;
+				bias-pull-up;
+			};
+
+			mmc2_pins: mmc2-pins {
+				pins = "PC6", "PC7", "PC8",
+				       "PC9", "PC10", "PC11";
+				function = "mmc2";
 				drive-strength = <30>;
 				bias-pull-up;
 			};
