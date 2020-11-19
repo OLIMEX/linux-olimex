@@ -7,6 +7,7 @@
 /dts-v1/;
 
 #include "sun50i-a64.dtsi"
+#include "sun50i-a64-cpu-opp.dtsi"
 
 #include <dt-bindings/gpio/gpio.h>
 
