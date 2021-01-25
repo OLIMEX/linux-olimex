@@ -496,6 +496,27 @@ static int dwc2_driver_probe(struct platform_device *dev)
 		goto error;
 
 	/*
+	* Connect FS PHY transceiver to prevent 'HANG! Soft Reset timeout'
+	*/
+	if (!hsotg->phy) {
+		u32 v;
+
+		v = dwc2_readl(hsotg, GGPIO);
+		if (!(v & GGPIO_STM32_OTG_GCCFG_PWRDWN)) {
+			/*
+			* STM32 uses the GGPIO register as general
+			* core configuration register.
+			*/
+			v |= GGPIO_STM32_OTG_GCCFG_PWRDWN;
+			dwc2_writel(hsotg, v, GGPIO);
+		}
+
+		v = dwc2_readl(hsotg, GUSBCFG);
+		v |= GUSBCFG_PHYSEL;
+		dwc2_writel(hsotg, v, GUSBCFG);
+	}
+
+	/*
 	 * Reset before dwc2_get_hwparams() then it could get power-on real
 	 * reset value form registers.
 	 */
