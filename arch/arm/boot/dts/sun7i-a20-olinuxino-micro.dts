@@ -287,6 +287,18 @@
 	regulator-name = "avcc";
 };
 
+&reg_ldo3 {
+	regulator-always-on;
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+};
+
+&reg_ldo4 {
+	regulator-always-on;
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+};
+
 &reg_ahci_5v {
 	status = "okay";
 };

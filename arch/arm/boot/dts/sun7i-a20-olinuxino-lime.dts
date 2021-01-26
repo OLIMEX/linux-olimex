@@ -84,6 +84,15 @@
 			default-state = "on";
 		};
 	};
+
+	reg_axp_ipsout: axp_ipsout {
+                compatible = "regulator-fixed";
+                regulator-name = "axp-ipsout";
+                regulator-min-microvolt = <5000000>;
+                regulator-max-microvolt = <5000000>;
+                regulator-always-on;
+        };
+
 };
 
 &ahci {
@@ -176,6 +185,33 @@
 		function = "gpio_out";
 		drive-strength = <20>;
 	};
+};
+
+#include "axp209.dtsi"
+
+&ac_power_supply {
+        status = "okay";
+};
+
+&battery_power_supply {
+        status = "okay";
+};
+
+&reg_ldo3 {
+        regulator-min-microvolt = <3300000>;
+        regulator-max-microvolt = <3300000>;
+        regulator-soft-start;
+        regulator-ramp-delay = <1600>;
+        regulator-name = "vddio-csi0";
+};
+
+&reg_ldo3 {
+        regulator-min-microvolt = <3300000>;
+        regulator-max-microvolt = <3300000>;
+        regulator-soft-start;
+        regulator-ramp-delay = <1900>;
+        regulator-name = "vddio-csi1";
+
 };
 
 &reg_ahci_5v {
