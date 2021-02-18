@@ -96,10 +96,10 @@ headers:arm64v8:
 deploy-staging:
   stage: deploy
   script:
-    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb buster result/linux*.deb
-    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb bionic result/linux*.deb
-    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb focal result/linux*.deb
-    - reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb sid result/linux*.deb
+    - |
+      for repo in $REPOS ; do
+        reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb $repo result/linux*.deb
+      done
   cache: {}
   tags:
     - deploy
@@ -107,10 +107,10 @@ deploy-staging:
 deploy-release:
   stage: deploy
   script:
-    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb buster result/linux*.deb
-    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb bionic result/linux*.deb
-    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb focal result/linux*.deb
-    - reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb sid result/linux*.deb
+    - |
+      for repo in $REPOS ; do
+        reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb $repo result/linux*.deb
+      done
   tags:
     - deploy
   cache: {}
