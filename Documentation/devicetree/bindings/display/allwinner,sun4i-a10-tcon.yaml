@@ -114,6 +114,12 @@ properties:
           - const: edp
           - const: lvds
 
+  link-companion:
+    $ref: /schemas/types.yaml#/definitions/phandle
+    description: >
+      Phandle to the other TCON in the system used to drive a dual-link LVDS
+      output.
+
   ports:
     type: object
     description: |
