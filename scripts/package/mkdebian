@@ -97,6 +97,7 @@ sourcename=$KDEB_SOURCENAME
 linux_meta_name=linux$LOCALVERSION
 linux_image_meta_name=linux-image$LOCALVERSION
 linux_headers_meta_name=linux-headers$LOCALVERSION
+kernel_headers_packagename=linux-headers-$version
 
 if [ "$ARCH" = "um" ] ; then
 	packagename=user-mode-linux
