@@ -349,16 +349,16 @@
 	status = "okay";
 };
 
+&usbphyc {
+	status = "okay";
+};
+
 &usbphyc_port0 {
 	phy-supply = <&vdd_usb>;
-	vdda1v1-supply = <&reg11>;
-	vdda1v8-supply = <&reg18>;
 };
 
 &usbphyc_port1 {
 	phy-supply = <&vdd_usb>;
-	vdda1v1-supply = <&reg11>;
-	vdda1v8-supply = <&reg18>;
 };
 
 &usbh_ehci {
@@ -378,9 +378,5 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&usbotg_hs_pins_a &usbotg_fs_dp_dm_pins_a>;	/* configure OTG ID and full-speed data pins */
 	vbus-supply = <&vbus_otg>;					/* voltage regulator to supply Vbus */
-	status = "okay";
-};
-
-&usbphyc {
 	status = "okay";
 };
