@@ -112,6 +112,13 @@ static const struct {
 	{ 48000, ES8328_DACCONTROL6_DEEMPH_48k },
 };
 
+static int es8328_of_xlate_dai_id(struct snd_soc_component *component,
+				  struct device_node *endpoint)
+{
+	        /* return dai id 0, whatever the endpoint index */
+	        return 0;
+}
+
 static int es8328_set_deemph(struct snd_soc_component *component)
 {
 	struct es8328_priv *es8328 = snd_soc_component_get_drvdata(component);
@@ -328,6 +335,8 @@ static const struct snd_soc_dapm_widget es8328_dapm_widgets[] = {
 			ES8328_CHIPPOWER_ADCVREF_OFF, 1, NULL, 0),
 	SND_SOC_DAPM_SUPPLY("DAC Vref", ES8328_CHIPPOWER,
 			ES8328_CHIPPOWER_DACVREF_OFF, 1, NULL, 0),
+	SND_SOC_DAPM_SUPPLY("MCLK1", SND_SOC_NOPM, 0, 0, NULL,
+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
 
 	SND_SOC_DAPM_DAC("Right DAC", "Right Playback", ES8328_DACPOWER,
 			ES8328_DACPOWER_RDAC_OFF, 1),
@@ -838,6 +847,7 @@ static const struct snd_soc_component_driver es8328_component_driver = {
 	.num_dapm_widgets	= ARRAY_SIZE(es8328_dapm_widgets),
 	.dapm_routes		= es8328_dapm_routes,
 	.num_dapm_routes	= ARRAY_SIZE(es8328_dapm_routes),
+	.of_xlate_dai_id        = es8328_of_xlate_dai_id,
 	.suspend_bias_off	= 1,
 	.idle_bias_on		= 1,
 	.use_pmdown_time	= 1,
@@ -870,6 +880,11 @@ int es8328_probe(struct device *dev, struct regmap *regmap)
 		return ret;
 	}
 
+	es8328->clk = devm_clk_get(dev, "MCLK1");
+	if (IS_ERR(es8328->clk)) {
+		dev_err(dev, "codec clock missing or invalid\n");
+		ret = PTR_ERR(es8328->clk);
+	}
 	dev_set_drvdata(dev, es8328);
 
 	return devm_snd_soc_register_component(dev,
