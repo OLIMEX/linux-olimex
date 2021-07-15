@@ -15,7 +15,7 @@
 
 / {
 	model = "STM32MP1XX OLinuXino";
-	compatible = "olimex,stm32mp1xx-olinuxino" , "st,stm32mp153";
+	compatible = "olimex,stm32mp1xx-olinuxino-lime" , "st,stm32mp153";
 	aliases {
 		ethernet0 = &ethernet0;
 		serial0 = &uart4;
@@ -77,9 +77,6 @@
 		};
 	};
 
-	aliases {
-		serial0 = &uart4;
-	};
 	vdd_sd3v3: regulator_vdd {
 		compatible = "regulator-fixed";
 		regulator-name = "vdd-sd";
