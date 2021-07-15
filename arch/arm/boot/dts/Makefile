@@ -1051,7 +1051,7 @@ dtb-$(CONFIG_ARCH_STI) += \
 	stih410-b2260.dtb \
 	stih418-b2199.dtb
 dtb-$(CONFIG_ARCH_STM32) += \
-	stm32mp1xx-olinuxino.dtb \
+	stm32mp1xx-olinuxino-lime.dtb \
 	stm32mp1xx-olinuxino-som.dtb \
 	stm32f429-disco.dtb \
 	stm32f469-disco.dtb \
