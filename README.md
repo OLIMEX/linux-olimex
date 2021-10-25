@@ -35,12 +35,17 @@ the problems which may result by upgrading your kernel.
 
 ## 3 Building the kernel
 ### 3.1 Configuring kernel options 
-> In this github, the .config file is already updated for
-    &nbsp; Device drivers ---> 
-    &nbsp; &nbsp; Network device support ---> 
-    &nbsp; &nbsp; &nbsp; Wireless LAN ---> 
-    &nbsp; &nbsp; &nbsp; &nbsp; Realtek devices
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <M> Realtek 8821C USB WiFi 
+In this github, the .config file is already updated for
+
+Device drivers ---&gt; 
+
+&nbsp; &nbsp; Network device support ---&gt;
+
+&nbsp; &nbsp; &nbsp; Wireless LAN ---&gt;
+
+&nbsp; &nbsp; &nbsp; &nbsp; Realtek devices
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;M&gt; Realtek 8821C USB WiFi 
 		
     # cd linux-olimex
     # sudo make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
