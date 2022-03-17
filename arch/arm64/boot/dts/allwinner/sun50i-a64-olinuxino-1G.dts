@@ -216,8 +216,8 @@
 
 &reg_dcdc2 {
 	regulator-always-on;
-	regulator-min-microvolt = <1240000>;
-	regulator-max-microvolt = <1300000>;
+	regulator-min-microvolt = <1180000>;
+	regulator-max-microvolt = <1180000>;
 	regulator-name = "vdd-cpux";
 };
 
