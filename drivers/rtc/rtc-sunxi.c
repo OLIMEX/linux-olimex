@@ -20,9 +20,15 @@
 #include <linux/rtc.h>
 #include <linux/types.h>
 
+#define SUNXI_LOSC_CTRL_KEY			0x16AA0000
+#define SUNXI_LOSC_CTRL_AUTO_SWT_EN		BIT(14)
+
 #define SUNXI_LOSC_CTRL				0x0000
 #define SUNXI_LOSC_CTRL_RTC_HMS_ACC		BIT(8)
 #define SUNXI_LOSC_CTRL_RTC_YMD_ACC		BIT(7)
+#define SUNXI_LOSC_CTRL_EXT_GSM1		BIT(3)
+#define SUNXI_LOSC_CTRL_EXT_GSM0		BIT(2)
+#define SUNXI_LOSC_CTRL_SRC_SEL			BIT(0)
 
 #define SUNXI_RTC_YMD				0x0004
 
@@ -423,6 +429,8 @@ static int sunxi_rtc_probe(struct platform_device *pdev)
 {
 	struct sunxi_rtc_dev *chip;
 	int ret;
+	
+	uint32_t loscctrl;
 
 	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
 	if (!chip)
@@ -454,6 +462,19 @@ static int sunxi_rtc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Unable to setup RTC data\n");
 		return -ENODEV;
 	}
+
+	loscctrl = readl(chip->base + SUNXI_LOSC_CTRL);
+	loscctrl &= ~(SUNXI_LOSC_CTRL_AUTO_SWT_EN);
+	loscctrl |= (SUNXI_LOSC_CTRL_SRC_SEL | SUNXI_LOSC_CTRL_KEY);
+	loscctrl |= SUNXI_LOSC_CTRL_EXT_GSM1;
+	writel(loscctrl, chip->base + SUNXI_LOSC_CTRL);
+	udelay(100);
+
+	loscctrl = readl(chip->base + SUNXI_LOSC_CTRL);
+	if (!(loscctrl & SUNXI_LOSC_CTRL_SRC_SEL)) {
+		dev_err(&pdev->dev, "Error: Set LOSC to external failed. RTC time may be wrong\n");
+	}
+
 
 	/* clear the alarm count value */
 	writel(0, chip->base + SUNXI_ALRM_DHMS);
