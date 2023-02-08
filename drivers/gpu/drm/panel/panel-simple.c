@@ -3077,6 +3077,31 @@ static const struct panel_desc olimex_lcd_olinuxino_7 = {
 	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
 };
 
+//F*cked up LCD test
+static const struct drm_display_mode olimex_lcd_olinuxino_7inv_mode = {
+        .clock = 54000,
+        .hdisplay = 1024,
+        .hsync_start = 1024 + 159,
+        .hsync_end = 1024 + 159 + 1,
+        .htotal = 1024 + 1 + 159 + 160,
+        .vdisplay = 600,
+        .vsync_start = 600 + 11,
+        .vsync_end = 600 + 11 + 1,
+        .vtotal = 600 + 11 + 1 + 23,
+        .flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+};
+
+static const struct panel_desc olimex_lcd_olinuxino_7inv = {
+        .modes = &olimex_lcd_olinuxino_7inv_mode,
+        .num_modes = 1,
+        .size = {
+                .width = 154,
+                .height = 86,
+        },
+        .bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+};
+//
+
 static const struct drm_display_mode olimex_lcd_olinuxino_10_mode = {
 	.clock = 45000,
 	.hdisplay = 1024,
@@ -4286,6 +4311,9 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "olimex,lcd-olinuxino-7",
 		.data = &olimex_lcd_olinuxino_7,
+	}, {
+		.compatible = "olimex,lcd-olinuxino-7inv",
+		.data = &olimex_lcd_olinuxino_7inv,
 	}, {
 		.compatible = "olimex,lcd-olinuxino-10",
 		.data = &olimex_lcd_olinuxino_10,
