@@ -593,6 +593,7 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
 
 	/* Configures the HS, VS, DE and PC polarities. Default Active Low */
 	val = 0;
+	printk(KERN_INFO "vm.flags stats: %d\n", vm.flags);
 
 	if (vm.flags & DISPLAY_FLAGS_HSYNC_HIGH)
 		val |= GCR_HSPOL;
@@ -605,6 +606,8 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
 
 	if (bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
 		val |= GCR_PCPOL;
+
+	printk(KERN_INFO "LTDC Reg stats: %d\n", val);
 
 	reg_update_bits(ldev->regs, LTDC_GCR,
 			GCR_HSPOL | GCR_VSPOL | GCR_DEPOL | GCR_PCPOL, val);
