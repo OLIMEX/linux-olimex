@@ -594,8 +594,14 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
 	if (vm.flags & DISPLAY_FLAGS_HSYNC_HIGH)
 		val |= GCR_HSPOL;
 
+	if (vm.flags & DISPLAY_FLAGS_HSYNC_LOW)
+                val ^= GCR_HSPOL;
+
 	if (vm.flags & DISPLAY_FLAGS_VSYNC_HIGH)
 		val |= GCR_VSPOL;
+
+	if (vm.flags & DISPLAY_FLAGS_VSYNC_LOW)
+                val ^= GCR_VSPOL;
 
 	if (bus_flags & DRM_BUS_FLAG_DE_LOW)
 		val |= GCR_DEPOL;
