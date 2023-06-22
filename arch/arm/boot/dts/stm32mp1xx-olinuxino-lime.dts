@@ -301,7 +301,7 @@
 	mbox-names = "vq0", "vq1", "shutdown";
 	interrupt-parent = <&exti>;
 	interrupts = <68 1>;
-	status = "disabled";
+	status = "okay";
 };
 
 &pwr_regulators {
