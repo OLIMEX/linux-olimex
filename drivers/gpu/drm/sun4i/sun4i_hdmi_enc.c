@@ -91,7 +91,8 @@ static void sun4i_hdmi_disable(struct drm_encoder *encoder)
 	DRM_DEBUG_DRIVER("Disabling the HDMI Output\n");
 
 #ifdef CONFIG_DRM_SUN4I_HDMI_AUDIO
-	sun4i_hdmi_audio_destroy(hdmi);
+	if (hdmi->hdmi_audio)
+		sun4i_hdmi_audio_destroy(hdmi);
 #endif
 
 	val = readl(hdmi->base + SUN4I_HDMI_VID_CTRL_REG);
