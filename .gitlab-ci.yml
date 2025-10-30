@@ -1,5 +1,5 @@
 default:
-  image: debian:buster
+  image: debian:bullseye
 
 stages:
   - prepare
@@ -76,7 +76,7 @@ build:arm64:
   <<: *build
 
 headers:arm32v7:
-  image: arm32v7/debian:buster
+  image: arm32v7/debian:bullseye
   stage: headers
   variables:
     ARCH: "arm"
@@ -85,7 +85,7 @@ headers:arm32v7:
   <<: *build_headers
 
 headers:arm64v8:
-  image: arm64v8/debian:buster
+  image: arm64v8/debian:bullseye
   stage: headers
   variables:
     ARCH: "arm64"
