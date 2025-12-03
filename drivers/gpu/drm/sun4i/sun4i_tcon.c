@@ -350,6 +350,9 @@ static void sun4i_tcon0_mode_set_dithering(struct sun4i_tcon *tcon,
 		break;
 	}
 
+	if (tcon->tcon0_frm_enable)
+		val |= SUN4I_TCON0_FRM_CTL_EN;
+
 	/* Write dithering settings */
 	regmap_write(tcon->regs, SUN4I_TCON_FRM_CTL_REG, val);
 }
@@ -1208,6 +1211,7 @@ static int sun4i_tcon_bind(struct device *dev, struct device *master,
 	struct drm_device *drm = data;
 	struct sun4i_drv *drv = drm->dev_private;
 	struct sunxi_engine *engine;
+	struct device_node *np = dev->of_node;
 	struct sun4i_tcon *tcon;
 	struct reset_control *edp_rstc;
 	int ret;
@@ -1224,6 +1228,11 @@ static int sun4i_tcon_bind(struct device *dev, struct device *master,
 	dev_set_drvdata(dev, tcon);
 	tcon->drm = drm;
 	tcon->dev = dev;
+	/* Optional DT-controlled bits */
+	tcon->tcon0_de_negative =
+		of_property_read_bool(np, "allwinner,tcon0-de-negative");
+	tcon->tcon0_frm_enable =
+		of_property_read_bool(np, "allwinner,tcon0-frm-enable");
 	tcon->id = engine->id;
 	tcon->quirks = of_device_get_match_data(dev);
 
@@ -1265,7 +1274,18 @@ static int sun4i_tcon_bind(struct device *dev, struct device *master,
 		dev_err(dev, "Couldn't init our TCON regmap\n");
 		goto err_free_clocks;
 	}
-
+	
+	/*
+	 * Apply DE polarity from DT, if requested.
+	 * This sets bit 27 in TCON0_IO_POL_REG (0x01C0C088):
+	 *   memtool mw 0x01C0C088 0x08000000
+	 */
+/*	if (tcon->tcon0_de_negative) {
+		regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
+				   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
+				   SUN4I_TCON0_IO_POL_DE_NEGATIVE);
+	}
+*/
 	if (tcon->quirks->has_channel_0) {
 		ret = sun4i_dclk_create(dev, tcon);
 		if (ret) {

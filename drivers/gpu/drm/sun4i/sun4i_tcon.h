@@ -278,7 +278,11 @@ struct sun4i_tcon {
 
 	/* Platform adjustments */
 	const struct sun4i_tcon_quirks	*quirks;
-
+	
+	/* DT controlled options */
+	bool tcon0_de_negative;   /* control SUN4I_TCON0_IO_POL_DE_NEGATIVE */
+	bool tcon0_frm_enable;    /* control SUN4I_TCON0_FRM_CTL_EN */
+	
 	/* Associated crtc */
 	struct sun4i_crtc		*crtc;
 

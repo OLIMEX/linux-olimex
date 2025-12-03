@@ -3103,15 +3103,15 @@ static const struct panel_desc olimex_lcd_olinuxino_7inv = {
 //
 
 static const struct drm_display_mode olimex_lcd_olinuxino_10_mode = {
-	.clock = 45000,
+	.clock = 52000,
 	.hdisplay = 1024,
-	.hsync_start = 1024 + 16,
-	.hsync_end = 1024 + 16 + 1,
-	.htotal = 1024 + 10 + 6 + 160,
+	.hsync_start = 1024 + 160,
+	.hsync_end = 1024 + 160 + 1,
+	.htotal = 1024 + 160 + 1 + 159,
 	.vdisplay = 600,
-	.vsync_start = 600 + 1,
-	.vsync_end = 600 + 1 + 1,
-	.vtotal = 600 + 1 + 1 + 22,
+	.vsync_start = 600 + 10,
+	.vsync_end = 600 + 11 + 1,
+	.vtotal = 600 + 11 + 1 + 23,
 };
 
 static const struct panel_desc olimex_lcd_olinuxino_10 = {
@@ -3122,6 +3122,8 @@ static const struct panel_desc olimex_lcd_olinuxino_10 = {
 		.height = 143,
 	},
 	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+        .bus_flags = DRM_BUS_FLAG_DE_LOW,
+
 };
 
 /*
