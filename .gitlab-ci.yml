@@ -1,5 +1,5 @@
 default:
-  image: debian:bullseye
+  image: debian:bookworm-slim
 
 stages:
   - prepare
@@ -76,7 +76,7 @@ build:arm64:
   <<: *build
 
 headers:arm32v7:
-  image: arm32v7/debian:bullseye
+  image: arm32v7/debian:bookworm-slim
   stage: headers
   variables:
     ARCH: "arm"
@@ -85,7 +85,7 @@ headers:arm32v7:
   <<: *build_headers
 
 headers:arm64v8:
-  image: arm64v8/debian:bullseye
+  image: arm64v8/debian:bookworm-slim
   stage: headers
   variables:
     ARCH: "arm64"
