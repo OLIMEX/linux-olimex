@@ -130,7 +130,11 @@ static const struct id_table ic_id_table[] = {
 	  .cfg_name = "rtl_bt/rtl8723cs_xx_config" },
 
 	/* 8723D */
-	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd),
+	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |
+			 IC_MATCH_FL_HCIBUS,
+	  .lmp_subver = RTL_ROM_LMP_8723B,
+	  .hci_rev = 0xd,
+	  .hci_bus = HCI_USB,
 	  .config_needed = true,
 	  .has_rom_version = true,
 	  .fw_name  = "rtl_bt/rtl8723d_fw.bin",
