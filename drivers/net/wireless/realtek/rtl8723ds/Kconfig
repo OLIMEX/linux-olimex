@@ -1,0 +1,9 @@
+config RTL8723DS
+	tristate "Realtek RTL8723DS SDIO WiFi"
+	depends on MMC && CFG80211
+	help
+	  This option enables the vendor Realtek RTL8723DS SDIO wireless
+	  driver, integrated into the kernel tree as a regular module.
+
+	  To build it as a module, choose M here. The module will be called
+	  8723ds.
