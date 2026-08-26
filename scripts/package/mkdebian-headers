@@ -185,6 +185,8 @@ srctree ?= .
 build:
 	\$(MAKE) KERNELRELEASE=${version} ARCH=${ARCH} \
 	KBUILD_BUILD_VERSION=${revision} -f \$(srctree)/Makefile oldconfig
+	\$(MAKE) KERNELRELEASE=${version} ARCH=${ARCH} \
+	KBUILD_BUILD_VERSION=${revision} -f \$(srctree)/Makefile modules_prepare
 
 binary-arch:
 	\$(MAKE) KERNELRELEASE=${version} ARCH=${ARCH} \
