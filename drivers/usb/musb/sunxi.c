@@ -294,12 +294,27 @@ static int sunxi_musb_exit(struct musb *musb)
 static void sunxi_musb_enable(struct musb *musb)
 {
 	struct sunxi_glue *glue = dev_get_drvdata(musb->controller->parent);
+	int hostmode;
 
 	glue->musb = musb;
 
 	/* musb_core does not call us in a balanced manner */
 	if (test_and_set_bit(SUNXI_MUSB_FL_ENABLED, &glue->flags))
 		return;
+
+	/* The extcon state may have been established before MUSB was enabled. */
+	hostmode = extcon_get_state(glue->extcon, EXTCON_USB_HOST);
+	if (hostmode < 0) {
+		dev_err(glue->dev, "Error reading USB host extcon state: %d\n",
+			hostmode);
+	} else {
+		if (hostmode)
+			set_bit(SUNXI_MUSB_FL_HOSTMODE, &glue->flags);
+		else
+			clear_bit(SUNXI_MUSB_FL_HOSTMODE, &glue->flags);
+
+		set_bit(SUNXI_MUSB_FL_HOSTMODE_PEND, &glue->flags);
+	}
 
 	schedule_work(&glue->work);
 }
