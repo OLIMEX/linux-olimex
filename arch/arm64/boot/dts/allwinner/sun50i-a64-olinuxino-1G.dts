@@ -91,6 +91,8 @@
 };
 
 &ehci0 {
+	/delete-property/ phy-names;
+	/delete-property/ phys;
 	status = "okay";
 };
 
@@ -154,6 +156,8 @@
 };
 
 &ohci0 {
+	/delete-property/ phy-names;
+	/delete-property/ phys;
 	status = "okay";
 };
 
