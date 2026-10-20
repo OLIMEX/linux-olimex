@@ -429,11 +429,22 @@ static int sun4i_usb_phy_power_on(struct phy *_phy)
 	if (!phy->vbus || phy->regulator_on)
 		return 0;
 
-	/* For phy0 only turn on Vbus if we don't have an ext. Vbus */
+	/* For PHY0 only turn on VBUS if we do not have external VBUS. */
 	if (phy->index == 0 && sun4i_usb_phy0_have_vbus_det(data) &&
 				data->vbus_det) {
-		dev_warn(&_phy->dev, "External vbus detected, not enabling our own vbus\n");
-		return 0;
+		/*
+		 * Firmware may have left our regulator enabled.  Claim it so
+		 * regulator late cleanup does not remove VBUS after boot.
+		 */
+		ret = regulator_is_enabled(phy->vbus);
+		if (ret < 0)
+			return ret;
+
+		if (!ret) {
+			dev_warn(&_phy->dev,
+				 "External vbus detected, not enabling our own vbus\n");
+			return 0;
+		}
 	}
 
 	ret = regulator_enable(phy->vbus);
