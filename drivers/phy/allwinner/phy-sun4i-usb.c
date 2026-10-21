@@ -432,6 +432,14 @@ static int sun4i_usb_phy_power_on(struct phy *_phy)
 	/* For PHY0 only turn on VBUS if we do not have external VBUS. */
 	if (phy->index == 0 && sun4i_usb_phy0_have_vbus_det(data) &&
 				data->vbus_det) {
+		/* The firmware-enabled VBUS quirk is A64 host mode only. */
+		if (data->cfg->type != sun50i_a64_phy ||
+		    sun4i_usb_phy0_get_id_det(data)) {
+			dev_warn(&_phy->dev,
+				 "External vbus detected, not enabling our own vbus\n");
+			return 0;
+		}
+
 		/*
 		 * Firmware may have left our regulator enabled.  Claim it so
 		 * regulator late cleanup does not remove VBUS after boot.
